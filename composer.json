@@ -1,0 +1,14 @@
+{
+  "name": "druidvav/simple-oauth-bundle",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "description": "",
+  "autoload": {
+    "psr-4": { "": "src/" }
+  },
+  "require": {
+    "php": ">=5.6.0",
+    "symfony/framework-bundle": "~3.0",
+    "kriswallsmith/buzz":       "~0.7"
+  }
+}
