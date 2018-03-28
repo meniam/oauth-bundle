@@ -45,8 +45,8 @@ class DvSimpleOauthExtension extends Extension
                 'You must setup php-http/httplug-bundle to use the default http message factory service.'
             );
         }
-        $container->setAlias('hwi_oauth.http.client', new Alias($config['http']['client'], true));
-        $container->setAlias('hwi_oauth.http.message_factory', new Alias($config['http']['message_factory'], true));
+        $container->setAlias('dv.oauth.http.client', new Alias($config['http']['client'], true));
+        $container->setAlias('dv.oauth.http.message_factory', new Alias($config['http']['message_factory'], true));
     }
 
     private function enableServices($config, $globalConfig, ContainerBuilder $container)
