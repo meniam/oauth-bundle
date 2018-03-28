@@ -6,9 +6,10 @@ services:
     dv.oauth.http_client:
         class: Buzz\Client\Curl
         arguments:
-            max_redirects: 1
-            timeout: 5
-            verify: false
+            -
+                max_redirects: 1
+                timeout: 5
+                verify: false
     dv.oauth.storage.session:
         class: Druidvav\SimpleOauthBundle\OAuth\RequestDataStorage\SessionStorage
         arguments: [ "@session" ]
