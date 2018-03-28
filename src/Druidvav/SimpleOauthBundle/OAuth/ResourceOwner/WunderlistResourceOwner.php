@@ -12,35 +12,32 @@
 namespace Druidvav\SimpleOauthBundle\OAuth\ResourceOwner;
 
 use Druidvav\SimpleOauthBundle\OAuth\OAuthToken;
+use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * FlickrResourceOwner.
- *
- * @author Dmitri Lakachauskis <lakiboy83@gmail.com>
+ * @author Guillaume Potier <guillaume@wisembly.com>
  */
-class FlickrResourceOwner extends GenericOAuth1ResourceOwner
+class WunderlistResourceOwner extends GenericOAuth2ResourceOwner
 {
     /**
      * {@inheritdoc}
      */
     protected $paths = array(
-        'identifier' => 'user_nsid',
-        'nickname' => 'username',
-        'realname' => 'fullname',
+        'identifier' => 'id',
+        'nickname' => 'name',
+        'realname' => 'name',
+        'email' => 'email',
     );
 
     /**
      * {@inheritdoc}
      */
-    public function getAuthorizationUrl($redirectUri, array $extraParameters = array())
+    protected function doGetUserInformationRequest($url, array $parameters = array())
     {
-        $token = $this->getRequestToken($redirectUri, $extraParameters);
-
-        return $this->normalizeUrl($this->options['authorization_url'], array(
-            'oauth_token' => $token['oauth_token'],
-            'perms' => $this->options['perms'],
-            'nojsoncallback' => 1,
+        return $this->httpRequest($url, null, array(
+            'X-Client-ID' => $this->options['client_id'],
+            'X-Access-Token' => $parameters['access_token'],
         ));
     }
 
@@ -49,8 +46,10 @@ class FlickrResourceOwner extends GenericOAuth1ResourceOwner
      */
     public function getUserInformation(array $accessToken, array $extraParameters = array())
     {
+        $content = $this->doGetUserInformationRequest($this->options['infos_url'], array('access_token' => $accessToken['access_token']));
+
         $response = $this->getUserResponse();
-        $response->setData($accessToken);
+        $response->setData($content instanceof ResponseInterface ? (string) $content->getBody() : $content);
         $response->setResourceOwner($this);
         $response->setOAuthToken(new OAuthToken($accessToken));
 
@@ -65,14 +64,9 @@ class FlickrResourceOwner extends GenericOAuth1ResourceOwner
         parent::configureOptions($resolver);
 
         $resolver->setDefaults(array(
-            'authorization_url' => 'http://www.flickr.com/services/oauth/authorize',
-            'request_token_url' => 'http://www.flickr.com/services/oauth/request_token',
-            'access_token_url' => 'http://www.flickr.com/services/oauth/access_token',
-
-            // Flickr don't use `infos_url`
-            'infos_url' => null,
-
-            'perms' => 'read',
+            'authorization_url' => 'https://www.wunderlist.com/oauth/authorize',
+            'access_token_url' => 'https://www.wunderlist.com/oauth/access_token',
+            'infos_url' => 'https://a.wunderlist.com/api/v1/user',
         ));
     }
 }

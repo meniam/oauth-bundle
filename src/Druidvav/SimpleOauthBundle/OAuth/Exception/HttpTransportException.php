@@ -11,7 +11,9 @@
 
 namespace Druidvav\SimpleOauthBundle\OAuth\Exception;
 
-class HttpTransportException extends \RuntimeException
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+
+class HttpTransportException extends AuthenticationException
 {
     private $ownerName;
 

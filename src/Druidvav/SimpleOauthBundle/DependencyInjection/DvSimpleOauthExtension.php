@@ -2,6 +2,8 @@
 
 namespace Druidvav\SimpleOauthBundle\DependencyInjection;
 
+use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\DependencyInjection\Alias;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -21,10 +23,30 @@ class DvSimpleOauthExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $this->createHttplugClient($container, $config);
         $this->enableServices($config['services'], $config, $container);
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
+    }
+
+    protected function createHttplugClient(ContainerBuilder $container, array $config)
+    {
+        $httpClientId = $config['http']['client'];
+        $httpMessageFactoryId = $config['http']['message_factory'];
+        $bundles = $container->getParameter('kernel.bundles');
+        if ('httplug.client.default' === $httpClientId && !isset($bundles['HttplugBundle'])) {
+            throw new InvalidConfigurationException(
+                'You must setup php-http/httplug-bundle to use the default http client service.'
+            );
+        }
+        if ('httplug.message_factory.default' === $httpMessageFactoryId && !isset($bundles['HttplugBundle'])) {
+            throw new InvalidConfigurationException(
+                'You must setup php-http/httplug-bundle to use the default http message factory service.'
+            );
+        }
+        $container->setAlias('hwi_oauth.http.client', new Alias($config['http']['client'], true));
+        $container->setAlias('hwi_oauth.http.message_factory', new Alias($config['http']['message_factory'], true));
     }
 
     private function enableServices($config, $globalConfig, ContainerBuilder $container)

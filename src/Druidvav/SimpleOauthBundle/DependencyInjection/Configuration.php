@@ -26,6 +26,7 @@ class Configuration implements ConfigurationInterface
             ->append($this->addServicesSection())
         ;
 
+        $this->addHttpClientConfiguration($rootNode);
         return $treeBuilder;
     }
 
@@ -58,4 +59,18 @@ class Configuration implements ConfigurationInterface
         return $node;
     }
 
+    private function addHttpClientConfiguration(ArrayNodeDefinition $node)
+    {
+        $node
+            ->children()
+                ->arrayNode('http')
+                    ->addDefaultsIfNotSet()
+                    ->children()
+                        ->scalarNode('client')->defaultValue('httplug.client.default')->end()
+                        ->scalarNode('message_factory')->defaultValue('httplug.message_factory.default')->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
+    }
 }

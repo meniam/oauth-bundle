@@ -14,22 +14,20 @@ namespace Druidvav\SimpleOauthBundle\OAuth\ResourceOwner;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * HubicResourceOwner.
+ * AsanaResourceOwner.
  *
- * @author Vincent Cassé <vincent@casse.me>
+ * @author Guillaume Potier <guillaume@wisembly.com>
  */
-class HubicResourceOwner extends GenericOAuth2ResourceOwner
+class AsanaResourceOwner extends GenericOAuth2ResourceOwner
 {
     /**
      * {@inheritdoc}
      */
     protected $paths = array(
-        'identifier' => 'email',
-        'nickname' => 'email',
-        'firstname' => 'firstname',
-        'lastname' => 'lastname',
-        'realname' => 'firstname',
-        'email' => 'email',
+        'identifier' => 'data.id',
+        'nickname' => 'data.name',
+        'realname' => 'data.name',
+        'email' => 'data.email',
     );
 
     /**
@@ -40,9 +38,9 @@ class HubicResourceOwner extends GenericOAuth2ResourceOwner
         parent::configureOptions($resolver);
 
         $resolver->setDefaults(array(
-            'authorization_url' => 'https://api.hubic.com/oauth/auth/',
-            'access_token_url' => 'https://api.hubic.com/oauth/token/',
-            'infos_url' => 'https://api.hubic.com/1.0/account',
+            'authorization_url' => 'https://app.asana.com/-/oauth_authorize',
+            'access_token_url' => 'https://app.asana.com/-/oauth_token',
+            'infos_url' => 'https://app.asana.com/api/1.0/users/me',
         ));
     }
 }
