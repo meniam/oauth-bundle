@@ -1,0 +1,11 @@
+services:
+    me.oauth:
+        class: Meniam\OauthBundle\Service\OauthService
+        calls:
+            - [ setContainer, [ "@service_container" ] ]
+    me.oauth.http_client:
+        class: Http\Client\Common\HttpMethodsClient
+        arguments: [ "@me.oauth.http.client" , "@me.oauth.http.message_factory" ]
+    me.oauth.storage.session:
+        class: Meniam\OauthBundle\Oauth\RequestDataStorage\SessionStorage
+        arguments: [ "@session" ]
