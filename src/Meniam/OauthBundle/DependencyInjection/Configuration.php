@@ -13,8 +13,9 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('me_oauth');
+        $treeBuilder = new TreeBuilder('me_oauth');
+        $rootNode = method_exists(TreeBuilder::class, 'getRootNode') ? $treeBuilder->getRootNode() : $treeBuilder->root('me_oauth');
+
         $rootNode
             ->children()
             ->scalarNode('redirect_uri_route')
