@@ -35,8 +35,9 @@ class Configuration implements ConfigurationInterface
      */
     private function addServicesSection()
     {
-        $tree = new TreeBuilder();
-        $node = $tree->root('services');
+        $treeBuilder = new TreeBuilder('services');
+        $node = method_exists(TreeBuilder::class, 'getRootNode') ? $treeBuilder->getRootNode() : $treeBuilder->root('services');
+
         $node
             ->requiresAtLeastOneElement()
             ->prototype('array')
